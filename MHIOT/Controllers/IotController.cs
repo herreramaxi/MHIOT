@@ -1,7 +1,5 @@
 ﻿using MHIOT.Database;
 using MHIOT.Models;
-using System.Linq;
-using System.Web;
 using System.Web.Http;
 
 namespace MHIOT.Controllers

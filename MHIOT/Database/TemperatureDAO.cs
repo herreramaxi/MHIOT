@@ -12,7 +12,7 @@ namespace MHIOT.Database
         private static string _connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
         public void Insert(TemperatureData data)
         {
-            data.Date = DateTime.Now;
+            data.Date = DateTime.UtcNow;
             string query = "INSERT INTO dbo.Temperature(Temperature, Humidity, Date) " +
                            "VALUES (@Temperature, @Humidity, @Date) ";
 
@@ -20,8 +20,8 @@ namespace MHIOT.Database
             using (SqlConnection cn = new SqlConnection(_connectionString))
             using (SqlCommand cmd = new SqlCommand(query, cn))
             {
-                cmd.Parameters.Add("@Temperature", SqlDbType.Int).Value = data.Temperature;
-                cmd.Parameters.Add("@Humidity", SqlDbType.Int).Value = data.Humidity;
+                cmd.Parameters.Add("@Temperature", SqlDbType.Decimal).Value = data.Temperature;
+                cmd.Parameters.Add("@Humidity", SqlDbType.Decimal).Value = data.Humidity;
                 cmd.Parameters.Add("@Date", SqlDbType.DateTime).Value = data.Date;
 
                 cn.Open();
@@ -34,7 +34,7 @@ namespace MHIOT.Database
         {            
             var result = new List<TemperatureData>();
 
-            var date = DateTime.Now;
+            var date = DateTime.UtcNow;
             string query = "SELECT Id, Temperature, Humidity, Date FROM dbo.Temperature " +
                            "ORDER BY Date DESC";
 
@@ -50,8 +50,8 @@ namespace MHIOT.Database
                         {
                            var data = new TemperatureData();
                             data.Id = reader.GetInt32(0);
-                            data.Temperature = reader.GetInt32(1);
-                            data.Humidity = reader.GetInt32(2);
+                            data.Temperature = reader.GetDecimal(1);
+                            data.Humidity = reader.GetDecimal(2);
                             data.Date = reader.GetDateTime(3);
 
                             result.Add(data);
